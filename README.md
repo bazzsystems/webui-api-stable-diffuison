@@ -8,3 +8,8 @@ image dimensions, and other parameters. When the user clicks the "Generate Image
 image. The image is then displayed on the page, along with its decoded version. The page also includes a warning that only one image can be generated per 60 seconds and a 
 
 link to a Discord server.
+
+![Screenshot](Screenshot_1.png)
+![Screenshot](Screenshot_2.png)
+![Screenshot](Screenshot_3.png)
+![Screenshot](Screenshot_4.png)
