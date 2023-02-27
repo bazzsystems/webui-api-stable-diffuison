@@ -1,2 +1,2 @@
-# webui-api-stable-diffuison
- Its a web app with sends post request using the api of stable while also building a html page
+Youtube video  how to get started:https://youtu.be/ZCS1msokI9Q
+
