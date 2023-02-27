@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI NSFW Generator</title>
+    <link rel="shortcut icon" type="image/x-icon" href="icon.png">
+
+</head>
+<link rel="stylesheet" href="style.css">
+<body>
+    <div style="text-align:center;">
+        <h1>This tool is available only for PC</h1>
+        <h3>Only 1 Generate per 60 seconds, Or you will be blocked with no way to go back.</h3>
+        <p id="ip"></p>
+        <a href="https://discord.gg/your_link">Join Our Discord</a>
+      </div>
+      
+      <script>
+        // Get the user's IP address
+        function getIP(json) {
+          document.getElementById("ip").innerHTML = "Your IP Session is: Owner Hidden" ;
+        }
+      
+        var script = document.createElement("script");
+        script.src = "https://api.ipify.org?format=jsonp&callback=getIP";
+        document.head.appendChild(script);
+      </script>
+      
+    <div>
+        <label for="prompt">Prompt:</label>
+        <input type="text" id="prompt" name="prompt" value="dog"><br><br>
+        <label for="steps">Steps:</label>
+        <input type="number" id="steps" name="steps" min="1" max="25" value="1"><br><br>
+        <label for="width">Width:</label>
+        <input type="number" id="width" name="width" min="0" max="512" value="512"><br><br>
+        <label for="height">Height:</label>
+        <input type="number" id="height" name="height" min="0" max="512" value="512"><br><br>
+        <label for="scale">Scale:</label>
+        <input type="number" id="scale" name="scale" min="1" max="12" value="7"><br><br>
+        <label for="negative_prompt">Negative Prompt:</label>
+        <input type="text" id="negative_prompt" name="negative_prompt" value=""><br><br>
+        <button id="generateButton" onclick="generateImage()">Generate Image</button>
+    </div>
+    <div>
+        <label for="base64"></label>
+        <textarea id="base64" readonly></textarea><br><br>
+    </div>
+    <div>
+        <label for="image">Image:</label>
+        <img id="image" src="" alt=""><br><br>
+    </div>
+    <div>
+        <label for="decoded"></label>
+        <img id="decoded" src="" alt=""><br><br>
+    </div>
+    <script>
+var outputDiv = document.getElementById("output");
+var base64TextArea = document.getElementById("base64");
+var imageElement = document.getElementById("image");
+var decodedElement = document.getElementById("decoded");
+var isGenerating = false;
+var generateButton = document.getElementById("generateButton");
+generateButton.addEventListener("touchstart", generateImage);
+
+
+function generateImage() {
+    if (isGenerating) {
+        return;
+    }
+
+    var prompt = document.getElementById("prompt").value;
+    var steps = document.getElementById("steps").value;
+    var width = document.getElementById("width").value;
+    var height = document.getElementById("height").value;
+    var scale = document.getElementById("scale").value;
+    var negativePrompt = document.getElementById("negative_prompt").value;
+    var url = "http://127.0.0.1:7860/sdapi/v1/txt2img";
+    var payload = JSON.stringify({prompt: prompt, steps: steps, cfg_scale: scale, width: width, height: height, negative_prompt: negativePrompt});
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        isGenerating = false;
+
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.images) {
+                var image = response.images[0];
+                console.log(image);
+                base64TextArea.value = image;
+                imageElement.src = "data:image/png;base64," + image;
+                decodedElement.src = "";
+            } else {
+                outputDiv.innerHTML = "Error: Failed to generate image.";
+            }
+        } else {
+            outputDiv.innerHTML = "Error: " + xhr.statusText;
+        }
+    };
+    xhr.send(payload);
+    outputDiv.innerHTML = "Generating image... Please wait.";
+
+    // Set a cooldown of 5 seconds before allowing another click
+    isGenerating = true;
+    setTimeout(function() {
+        isGenerating = false;
+    }, 30000);
+}
+    </script>
+</body>
+</html>
